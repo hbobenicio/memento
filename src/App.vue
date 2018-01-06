@@ -2,7 +2,9 @@
   <div id="app" class="m-app">
     <v-app>
       <v-content>
-        <router-view></router-view>
+        <v-container>
+          <router-view></router-view>
+        </v-container>
       </v-content>
     </v-app>
   </div>
@@ -18,4 +20,5 @@ export default {
 </script>
 
 <style lang="scss">
+
 </style>
