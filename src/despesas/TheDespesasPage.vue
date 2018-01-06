@@ -57,13 +57,13 @@
                 <v-text-field label="Vencimento" prepend-icon="event" required></v-text-field>
               </v-flex>
               <v-flex xs12>
-                <v-text-field label="Nome" required></v-text-field>
+                <v-text-field label="Nome da Despesa" required></v-text-field>
               </v-flex>
               <v-flex xs12>
                 <v-text-field label="Responsavel" required></v-text-field>
               </v-flex>
               <v-flex xs12>
-                <v-text-field label="Valor" required></v-text-field>
+                <v-text-field label="Valor (em R$)" required></v-text-field>
               </v-flex>
             </v-layout>
           </v-container>
@@ -71,8 +71,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" flat @click.native="novaDespesaDialog = false">Close</v-btn>
-          <v-btn color="blue darken-1" flat @click.native="novaDespesaDialog = false">Save</v-btn>
+          <v-btn color="blue darken-1" flat @click.native="novaDespesaDialog = false">Cancelar</v-btn>
+          <v-btn color="blue darken-1" flat @click.native="novaDespesaDialog = false">Salvar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

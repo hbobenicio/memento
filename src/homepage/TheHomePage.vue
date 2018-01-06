@@ -8,7 +8,7 @@
       </v-flex>
     </v-layout>
     <v-layout row wrap>
-      <v-flex xs3 class="text-xs-center" v-for="mes in meses" :key="mes.index">
+      <v-flex xs12 sm6 md4 lg3 class="text-xs-center" v-for="mes in meses" :key="mes.index">
         <MCardMes :tipo="mes.index === 1 ? 'ok' : 'futuro'" :indiceMes="mes.index" />
       </v-flex>
     </v-layout>
