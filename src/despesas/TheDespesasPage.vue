@@ -2,16 +2,12 @@
   <v-container id="m-despesas-page" class="m-component m-page">
     <v-layout row wrap>
       <v-flex xs12>
-        <!-- <header>
-          <h1 class="text-xs-center">
-            {{ $route.params.mes.label }}
-          </h1>
-        </header> -->
         <v-toolbar color="light-blue" light extended>
           <v-toolbar-title slot="extension" class="white--text">
             {{ labelMes }}
           </v-toolbar-title>
-          <v-btn fab medium dark color="indigo" bottom right absolute @click="adicionarDespesa">
+          <v-btn fab medium dark color="indigo" bottom right absolute
+            @click="onClickNovaDespesa">
             <v-icon>add</v-icon>
           </v-btn>
         </v-toolbar>
@@ -24,6 +20,9 @@
           :items="tabelaDespesas.items"
           hide-actions
           class="elevation-1">
+          <template slot="no-data">
+            <p style="margin-bottom: 0px">Nenhuma despesa encontrada</p>
+          </template>
           <template slot="headers" slot-scope="props" class="text-xs-center ">
             <tr>
               <th v-for="(header, index) in props.headers" :key="index">
@@ -40,6 +39,11 @@
             <td :class="{pago: props.item.pago, green: props.item.pago, amber: !props.item.pago}" class="text-xs-center lighten-4">
               <v-switch v-model="props.item.pago"></v-switch>
             </td>
+            <td :class="{pago: props.item.pago, green: props.item.pago, amber: !props.item.pago}" class="text-xs-center lighten-4">
+              <v-btn icon color="error" @click="excluirDespesa(props.item.id)">
+                <v-icon>delete_forever</v-icon>
+              </v-btn>
+            </td>
           </template>
         </v-data-table>
       </v-flex>
@@ -54,16 +58,22 @@
           <v-container grid-list-md>
             <v-layout wrap>
               <v-flex xs12>
-                <v-text-field label="Vencimento" prepend-icon="event" required></v-text-field>
+                <v-text-field label="Vencimento" prepend-icon="event" hint="dd/mm/aaaa" required
+                  v-model="novaDespesa.vencimento">
+                </v-text-field>
               </v-flex>
               <v-flex xs12>
-                <v-text-field label="Nome da Despesa" required></v-text-field>
+                <v-text-field label="Nome da Despesa" required
+                  v-model="novaDespesa.nome">
+                </v-text-field>
               </v-flex>
               <v-flex xs12>
-                <v-text-field label="Responsavel" required></v-text-field>
+                <v-text-field label="Responsavel" required
+                  v-model="novaDespesa.responsavel"></v-text-field>
               </v-flex>
               <v-flex xs12>
-                <v-text-field label="Valor (em R$)" required></v-text-field>
+                <v-text-field label="Valor" prefix="R$" required
+                  v-model="novaDespesa.valor"></v-text-field>
               </v-flex>
             </v-layout>
           </v-container>
@@ -72,7 +82,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" flat @click.native="novaDespesaDialog = false">Cancelar</v-btn>
-          <v-btn color="blue darken-1" flat @click.native="novaDespesaDialog = false">Salvar</v-btn>
+          <v-btn color="blue darken-1" flat @click.native="salvarNovaDespesa">Salvar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -81,22 +91,53 @@
 
 <script>
 import meses from '@/shared/meses'
+import DespesaService from '@/despesas/despesa-service'
 
 export default {
   name: 'MDespesasPage',
+  created () {
+    DespesaService.all()
+      .then(response => {
+        console.log('Requisição para obter Despesas realizada com suceso. Response: ', response)
+
+        const data = response.data
+        if (data) {
+          const despesas = Object.entries(data).map(([k, v]) => ({
+            id: k,
+            ...v
+          }))
+          console.log('Despesas obtidas: ', despesas)
+
+          this.despesas = despesas
+        } else {
+          console.log('Nenhum registro encontrado')
+          this.despesas = []
+        }
+      })
+      .catch(error => {
+        alert('Erro ao recuperar a lista de despesas')
+        console.error('Erro: ', error)
+        this.despesas = []
+      })
+  },
   data: () => ({
-    despesas: [
-      { id: 1, vencimento: '01/01/2018', nome: 'Agua', responsavel: 'Hugo', valor: 50.75, pago: true },
-      { id: 2, vencimento: '02/01/2018', nome: 'Luz', responsavel: 'Hugo', valor: 75.75, pago: false },
-      { id: 3, vencimento: '03/01/2018', nome: 'Telefone', responsavel: 'Janaina', valor: 100.75, pago: false },
-    ],
+    despesas: [],
     pagination: {
       sortBy: 'pago'
     },
     novaDespesaDialog: false,
-    novaDespesaVencimento: null
+    novaDespesa: {
+      vencimento: null,
+      nome: '',
+      responsavel: '',
+      valor: 0,
+      pago: false
+    }
   }),
   computed: {
+    codigoMes () {
+      return this.$route.params.mes
+    },
     labelMes () {
       return meses.filter(m => m.index == this.$route.params.mes)[0].label
     },
@@ -116,15 +157,50 @@ export default {
           { text: 'Nome', value: 'nome' },
           { text: 'Responsável', value: 'responsavel' },
           { text: 'Valor', value: 'valor' },
-          { text: 'Status', value: 'status' }
+          { text: 'Status', value: 'status' },
+          { text: 'Acoes' }
         ],
         items: this.despesasOrdenadas
       }
     }
   },
   methods: {
-    adicionarDespesa () {
+    onClickNovaDespesa () {
       this.novaDespesaDialog = true
+    },
+    salvarNovaDespesa () {
+      const despesa = {
+        mes: this.codigoMes,
+        ...this.novaDespesa
+      }
+
+      DespesaService.create(despesa)
+        .then((response) => {
+          alert('Nova despesa salva com sucesso')
+          this.novaDespesa = {
+            vencimento: null,
+            nome: '',
+            responsavel: '',
+            valor: 0,
+            pago: false
+          }
+        })
+        .catch((error) => {
+          alert('Erro ao salvar nova despesa')
+          console.error('Erro: ', error, this.novaDespesa)
+        })
+        this.novaDespesaDialog = false
+    },
+    excluirDespesa(despesaId) {
+      DespesaService.delete(despesaId)
+        .then(response => {
+          alert('Despesa excluída com sucesso')
+          console.log(response)
+        })
+        .catch(error => {
+          alert(`Erro ao excluir despesa ${despesaId}`)
+          console.error('Erro: ', error)
+        })
     }
   }
 }
