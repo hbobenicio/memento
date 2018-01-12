@@ -1,4 +1,5 @@
 import axios from 'axios'
+import FirebaseUtils from '@/shared/firebase/firebase-utils'
 
 const axiosInstance = axios.create({
   baseURL: 'https://memento-31b51.firebaseio.com'
@@ -9,6 +10,7 @@ class DespesaService {
 
   all () {
     return axiosInstance.get('/despesas.json')
+      .then(FirebaseUtils.responseToList)
   }
 
   create (despesa) {

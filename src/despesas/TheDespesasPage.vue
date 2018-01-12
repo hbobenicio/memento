@@ -1,6 +1,10 @@
 <template>
   <v-container id="m-despesas-page" class="m-component m-page">
     <v-layout row wrap>
+      <v-snackbar :timeout="3500" top v-model="snackbar">
+        {{ snackMsg }}
+      </v-snackbar>
+
       <v-flex xs12>
         <v-toolbar color="light-blue" light extended>
           <v-toolbar-title slot="extension" class="white--text">
@@ -77,7 +81,7 @@
               </v-flex>
             </v-layout>
           </v-container>
-          <small>*indicates required field</small>
+          <small class="red--text">*campos obrigatórios</small>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -91,36 +95,17 @@
 
 <script>
 import meses from '@/shared/meses'
+import FirebaseUtils from '@/shared/firebase/firebase-utils'
 import DespesaService from '@/despesas/despesa-service'
 
 export default {
   name: 'MDespesasPage',
   created () {
-    DespesaService.all()
-      .then(response => {
-        console.log('Requisição para obter Despesas realizada com suceso. Response: ', response)
-
-        const data = response.data
-        if (data) {
-          const despesas = Object.entries(data).map(([k, v]) => ({
-            id: k,
-            ...v
-          }))
-          console.log('Despesas obtidas: ', despesas)
-
-          this.despesas = despesas
-        } else {
-          console.log('Nenhum registro encontrado')
-          this.despesas = []
-        }
-      })
-      .catch(error => {
-        alert('Erro ao recuperar a lista de despesas')
-        console.error('Erro: ', error)
-        this.despesas = []
-      })
+    this.listarDespesas()
   },
   data: () => ({
+    snackMsg: '',
+    snackbar: false,
     despesas: [],
     pagination: {
       sortBy: 'pago'
@@ -165,8 +150,23 @@ export default {
     }
   },
   methods: {
+    snackWithMsg (msg) {
+      this.snackMsg = msg
+      this.snackbar = true
+    },
     onClickNovaDespesa () {
       this.novaDespesaDialog = true
+    },
+    listarDespesas () {
+      DespesaService.all()
+        .then(despesas => {
+          this.despesas = despesas
+        })
+        .catch(error => {
+          this.snackWithMsg('Erro ao recuperar a lista de despesas')
+          console.error('Erro: ', error)
+          this.despesas = []
+        })
     },
     salvarNovaDespesa () {
       const despesa = {
@@ -175,8 +175,10 @@ export default {
       }
 
       DespesaService.create(despesa)
-        .then((response) => {
-          alert('Nova despesa salva com sucesso')
+        .then(response => {
+          this.listarDespesas()
+
+          this.snackWithMsg('Nova despesa salva com sucesso')
           this.novaDespesa = {
             vencimento: null,
             nome: '',
@@ -185,8 +187,8 @@ export default {
             pago: false
           }
         })
-        .catch((error) => {
-          alert('Erro ao salvar nova despesa')
+        .catch(error => {
+          this.snackWithMsg('Erro ao salvar nova despesa')
           console.error('Erro: ', error, this.novaDespesa)
         })
         this.novaDespesaDialog = false
@@ -194,11 +196,13 @@ export default {
     excluirDespesa(despesaId) {
       DespesaService.delete(despesaId)
         .then(response => {
-          alert('Despesa excluída com sucesso')
           console.log(response)
+          this.listarDespesas()
+
+          this.snackWithMsg('Despesa excluída com sucesso')
         })
         .catch(error => {
-          alert(`Erro ao excluir despesa ${despesaId}`)
+          this.snackWithMsg(`Erro ao excluir despesa ${despesaId}`)
           console.error('Erro: ', error)
         })
     }
