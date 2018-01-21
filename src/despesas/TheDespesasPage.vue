@@ -1,7 +1,7 @@
 <template>
   <section id="m-despesas-page" class="m-component m-page">
     <v-layout row wrap>
-      <v-snackbar :timeout="3500" top v-model="snackbar">
+      <v-snackbar :timeout="3000" top v-model="snackbar">
         {{ snackMsg }}
       </v-snackbar>
 
@@ -41,7 +41,7 @@
             <td :class="{pago: props.item.pago, green: props.item.pago, amber: !props.item.pago}" class="text-xs-center lighten-4">{{ props.item.responsavel }}</td>
             <td :class="{pago: props.item.pago, green: props.item.pago, amber: !props.item.pago}" class="text-xs-center lighten-4">{{ props.item.valor }}</td>
             <td :class="{pago: props.item.pago, green: props.item.pago, amber: !props.item.pago}" class="text-xs-center lighten-4">
-              <v-switch v-model="props.item.pago"></v-switch>
+              <v-switch v-model="props.item.pago" @change="onSwitchPago(props.item, $event)"></v-switch>
             </td>
             <td :class="{pago: props.item.pago, green: props.item.pago, amber: !props.item.pago}" class="text-xs-center lighten-4">
               <v-btn icon color="error" @click="excluirDespesa(props.item.id)">
@@ -142,13 +142,22 @@ export default {
     excluirDespesa (despesaId) {
       DespesaService.delete(despesaId)
         .then(response => {
-          console.log(response)
           this.listarDespesas()
-
           this.snackWithMsg('Despesa excluída com sucesso')
         })
         .catch(error => {
           this.snackWithMsg(`Erro ao excluir despesa ${despesaId}`)
+          console.error('Erro: ', error)
+        })
+    },
+    onSwitchPago (despesa, pago) {
+      DespesaService.update(despesa.id, {pago})
+        .then(response => {
+          console.log(response)
+          this.snackWithMsg('Despesa atualizada com sucesso')
+        })
+        .catch(error => {
+          this.snackWithMsg(`Erro ao atualizar despesa ${despesa.id}`)
           console.error('Erro: ', error)
         })
     }

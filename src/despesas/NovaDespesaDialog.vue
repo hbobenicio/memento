@@ -1,9 +1,15 @@
 <template>
-  <v-dialog v-model="showDialog" class="m-component m-dialog m-nova-despesa-dialog" max-width="500px">
+  <v-dialog class="m-component m-dialog m-nova-despesa-dialog"
+    v-model="showDialog" max-width="500px">
+
     <v-card>
+
+      <!-- Título -->
       <v-card-title>
         <span class="headline">Adicionar Despesa</span>
       </v-card-title>
+
+      <!-- Formulário -->
       <v-card-text>
         <v-container grid-list-md>
           <v-layout wrap>
@@ -31,6 +37,8 @@
         </v-container>
         <small class="red--text">*campos obrigatórios</small>
       </v-card-text>
+
+      <!-- Ações -->
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="blue darken-1" flat @click.native="onCancelar">Cancelar</v-btn>

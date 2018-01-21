@@ -25,6 +25,10 @@ class DespesaService {
     return axiosInstance.post('/despesas.json', despesa)
   }
 
+  update (despesaId, despesa) {
+    return axiosInstance.patch(`/despesas/${despesaId}.json`, despesa)
+  }
+
   delete (despesaId) {
     return axiosInstance.delete(`/despesas/${despesaId}.json`)
   }
