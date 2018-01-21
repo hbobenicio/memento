@@ -13,7 +13,7 @@ class DespesaService {
       .then(FirebaseUtils.responseToList)
   }
 
-  allByMonth(month) {
+  allByMonth (month) {
     // https://memento-31b51.firebaseio.com/despesas.json?orderBy=%22mes%22&startAt=1&endAt=1
     const resourcePath = '/despesas.json'
     const fullPath = `${resourcePath}?orderBy="mes"&startAt=${month}&endAt=${month}`
@@ -25,7 +25,7 @@ class DespesaService {
     return axiosInstance.post('/despesas.json', despesa)
   }
 
-  delete(despesaId) {
+  delete (despesaId) {
     return axiosInstance.delete(`/despesas/${despesaId}.json`)
   }
 }

@@ -1,5 +1,4 @@
 <template>
-  <!-- <section id="m-home-page" class="m-component m-page"> -->
   <section id="m-despesas-page" class="m-component m-page">
     <v-layout row wrap>
       <v-snackbar :timeout="3500" top v-model="snackbar">
@@ -54,44 +53,7 @@
       </v-flex>
     </v-layout>
 
-    <v-dialog v-model="novaDespesaDialog" max-width="500px">
-      <v-card>
-        <v-card-title>
-          <span class="headline">Adicionar Despesa</span>
-        </v-card-title>
-        <v-card-text>
-          <v-container grid-list-md>
-            <v-layout wrap>
-              <v-flex xs12>
-                <v-text-field label="Vencimento" prepend-icon="event" hint="dd/mm/aaaa" required
-                  v-model="novaDespesa.vencimento">
-                </v-text-field>
-              </v-flex>
-              <v-flex xs12>
-                <v-text-field label="Nome da Despesa" required
-                  v-model="novaDespesa.nome">
-                </v-text-field>
-              </v-flex>
-              <v-flex xs12>
-                <v-text-field label="Responsavel" required
-                  v-model="novaDespesa.responsavel"></v-text-field>
-              </v-flex>
-              <v-flex xs12>
-                <v-text-field label="Valor" prefix="R$" required
-                  :rules="[rules.required, rules.numerico]"
-                  v-model="novaDespesa.valor" />
-              </v-flex>
-            </v-layout>
-          </v-container>
-          <small class="red--text">*campos obrigatórios</small>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" flat @click.native="novaDespesaDialog = false">Cancelar</v-btn>
-          <v-btn color="blue darken-1" flat @click.native="salvarNovaDespesa">Salvar</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <NovaDespesaDialog ref="novaDespesaDialog" @salvar="onSalvarNovaDespesa" />
   </section>
 </template>
 
@@ -99,11 +61,15 @@
 import meses from '@/shared/meses'
 import FirebaseUtils from '@/shared/firebase/firebase-utils'
 import DespesaService from '@/despesas/despesa-service'
+import NovaDespesaDialog from '@/despesas/NovaDespesaDialog.vue'
 
 export default {
   name: 'MDespesasPage',
   created () {
     this.listarDespesas()
+  },
+  components: {
+    NovaDespesaDialog
   },
   data: () => ({
     snackMsg: '',
@@ -111,20 +77,6 @@ export default {
     despesas: [],
     pagination: {
       sortBy: 'pago'
-    },
-    novaDespesaDialog: false,
-    novaDespesa: {
-      vencimento: null,
-      nome: '',
-      responsavel: '',
-      valor: 0.0,
-      pago: false
-    },
-    rules: {
-      required: (valor) => !!valor || 'Campo obrigatório.',
-      numerico: (valor) => {
-        return true
-      }
     }
   }),
   computed: {
@@ -163,7 +115,7 @@ export default {
       this.snackbar = true
     },
     onClickNovaDespesa () {
-      this.novaDespesaDialog = true
+      this.$refs.novaDespesaDialog.show()
     },
     listarDespesas () {
       DespesaService.allByMonth(this.codigoMes)
@@ -176,33 +128,18 @@ export default {
           this.despesas = []
         })
     },
-    salvarNovaDespesa () {
-      const despesa = {
-        ...this.novaDespesa,
-        mes: parseInt(this.codigoMes),
-        valor: parseFloat(this.novaDespesa.valor)
-      }
-
-      DespesaService.create(despesa)
+    onSalvarNovaDespesa (novaDespesa) {
+      DespesaService.create(novaDespesa)
         .then(response => {
           this.listarDespesas()
-
           this.snackWithMsg('Nova despesa salva com sucesso')
-          this.novaDespesa = {
-            vencimento: null,
-            nome: '',
-            responsavel: '',
-            valor: 0.0,
-            pago: false
-          }
         })
         .catch(error => {
           this.snackWithMsg('Erro ao salvar nova despesa')
-          console.error('Erro: ', error, this.novaDespesa)
+          console.error('Erro: ', error, novaDespesa)
         })
-        this.novaDespesaDialog = false
     },
-    excluirDespesa(despesaId) {
+    excluirDespesa (despesaId) {
       DespesaService.delete(despesaId)
         .then(response => {
           console.log(response)
