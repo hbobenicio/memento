@@ -13,6 +13,14 @@ class DespesaService {
       .then(FirebaseUtils.responseToList)
   }
 
+  allByMonth(month) {
+    // https://memento-31b51.firebaseio.com/despesas.json?orderBy=%22mes%22&startAt=1&endAt=1
+    const resourcePath = '/despesas.json'
+    const fullPath = `${resourcePath}?orderBy="mes"&startAt=${month}&endAt=${month}`
+    return axiosInstance.get(fullPath)
+      .then(FirebaseUtils.responseToList)
+  }
+
   create (despesa) {
     return axiosInstance.post('/despesas.json', despesa)
   }

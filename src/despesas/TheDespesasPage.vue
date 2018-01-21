@@ -1,5 +1,6 @@
 <template>
-  <v-container id="m-despesas-page" class="m-component m-page">
+  <!-- <section id="m-home-page" class="m-component m-page"> -->
+  <section id="m-despesas-page" class="m-component m-page">
     <v-layout row wrap>
       <v-snackbar :timeout="3500" top v-model="snackbar">
         {{ snackMsg }}
@@ -77,7 +78,8 @@
               </v-flex>
               <v-flex xs12>
                 <v-text-field label="Valor" prefix="R$" required
-                  v-model="novaDespesa.valor"></v-text-field>
+                  :rules="[rules.required, rules.numerico]"
+                  v-model="novaDespesa.valor" />
               </v-flex>
             </v-layout>
           </v-container>
@@ -90,7 +92,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-container>
+  </section>
 </template>
 
 <script>
@@ -115,8 +117,14 @@ export default {
       vencimento: null,
       nome: '',
       responsavel: '',
-      valor: 0,
+      valor: 0.0,
       pago: false
+    },
+    rules: {
+      required: (valor) => !!valor || 'Campo obrigatório.',
+      numerico: (valor) => {
+        return true
+      }
     }
   }),
   computed: {
@@ -158,7 +166,7 @@ export default {
       this.novaDespesaDialog = true
     },
     listarDespesas () {
-      DespesaService.all()
+      DespesaService.allByMonth(this.codigoMes)
         .then(despesas => {
           this.despesas = despesas
         })
@@ -170,8 +178,9 @@ export default {
     },
     salvarNovaDespesa () {
       const despesa = {
-        mes: this.codigoMes,
-        ...this.novaDespesa
+        ...this.novaDespesa,
+        mes: parseInt(this.codigoMes),
+        valor: parseFloat(this.novaDespesa.valor)
       }
 
       DespesaService.create(despesa)
@@ -183,7 +192,7 @@ export default {
             vencimento: null,
             nome: '',
             responsavel: '',
-            valor: 0,
+            valor: 0.0,
             pago: false
           }
         })
