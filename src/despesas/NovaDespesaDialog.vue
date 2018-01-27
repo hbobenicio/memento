@@ -49,6 +49,8 @@
 </template>
 
 <script>
+import { schema as DespesaSchema } from '@/despesas/model/despesa.schema'
+
 export default {
   name: 'MNovaDespesaDialog',
   data: () => ({
