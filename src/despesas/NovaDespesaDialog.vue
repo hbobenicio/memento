@@ -14,9 +14,26 @@
         <v-container grid-list-md>
           <v-layout wrap>
             <v-flex xs12>
-              <v-text-field label="Vencimento" prepend-icon="event" hint="dd/mm/aaaa" required
+              <!-- <v-text-field label="Vencimento" prepend-icon="event" hint="dd/mm/aaaa" required
                 v-model="novaDespesa.vencimento">
-              </v-text-field>
+              </v-text-field> -->
+
+              <v-dialog persistent v-model="showModalVencimento" lazy full-width width="290px">
+                <v-text-field slot="activator" prepend-icon="event" readonly
+                  label="Vencimento"
+                  v-model="novaDespesa.vencimento"></v-text-field>
+
+                <v-date-picker v-model="novaDespesa.vencimento" scrollable actions
+                  locale="pt-br">
+                  <template slot-scope="{ save, cancel }">
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn flat color="primary" @click="cancel">Cancelar</v-btn>
+                      <v-btn flat color="primary" @click="save">Salvar</v-btn>
+                    </v-card-actions>
+                  </template>
+                </v-date-picker>
+              </v-dialog>
             </v-flex>
             <v-flex xs12>
               <v-text-field label="Nome da Despesa" required
@@ -55,6 +72,7 @@ export default {
   name: 'MNovaDespesaDialog',
   data: () => ({
     showDialog: false,
+    showModalVencimento: false,
     novaDespesa: {
       vencimento: null,
       nome: '',
