@@ -15,4 +15,8 @@ npm run dev
 npm run build
 ```
 
-For detailed explanation on how things work, consult the [docs for vue-loader](http://vuejs.github.io/vue-loader).
+## Comandos úteis do git
+
+- Deletar branch remoto: `git push <REMOTE> --delete <BRANCH>`
+- Deletar branch local: `git branch -d <BRANCH>`
+- Atualizar repo local a partir do upstream: `git fetch`

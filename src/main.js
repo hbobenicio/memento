@@ -10,7 +10,6 @@ import 'vuetify/dist/vuetify.css'
 
 import App from './App.vue'
 
-
 // Plugins
 Vue.use(VueRouter)
 Vue.use(Vuetify)

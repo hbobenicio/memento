@@ -36,7 +36,7 @@
           </template>
           <template slot="items" slot-scope="props">
             <td :class="{pago: props.item.pago, green: props.item.pago, amber: !props.item.pago}" class="text-xs-center lighten-4">{{ props.item.id }}</td>
-            <td :class="{pago: props.item.pago, green: props.item.pago, amber: !props.item.pago}" class="text-xs-center lighten-4">{{ props.item.vencimento }}</td>
+            <td :class="{pago: props.item.pago, green: props.item.pago, amber: !props.item.pago}" class="text-xs-center lighten-4">{{ props.item.vencimento | data }}</td>
             <td :class="{pago: props.item.pago, green: props.item.pago, amber: !props.item.pago}" class="text-xs-center lighten-4">{{ props.item.nome }}</td>
             <td :class="{pago: props.item.pago, green: props.item.pago, amber: !props.item.pago}" class="text-xs-center lighten-4">{{ props.item.responsavel }}</td>
             <td :class="{pago: props.item.pago, green: props.item.pago, amber: !props.item.pago}" class="text-xs-center lighten-4">{{ props.item.valor }}</td>
@@ -63,6 +63,8 @@ import FirebaseUtils from '@/shared/firebase/firebase-utils'
 import DespesaService from '@/despesas/despesa-service'
 import NovaDespesaDialog from '@/despesas/NovaDespesaDialog.vue'
 
+import moment from 'moment'
+
 export default {
   name: 'MDespesasPage',
   created () {
@@ -70,6 +72,11 @@ export default {
   },
   components: {
     NovaDespesaDialog
+  },
+  filters: {
+    data (dateValue) {
+      return moment().format('DD/MM/YYYY')
+    }
   },
   data: () => ({
     snackMsg: '',
