@@ -8,6 +8,9 @@ import router from '@/router/router'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.css'
 
+// Globally registered filters
+import '@/shared/filters/date.filter'
+
 import App from './App.vue'
 
 // Plugins
