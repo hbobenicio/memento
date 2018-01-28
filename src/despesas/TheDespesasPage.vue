@@ -1,5 +1,14 @@
 <template>
   <section id="m-despesas-page" class="m-component m-page">
+    <v-breadcrumbs>
+      <v-icon slot="divider">chevron_right</v-icon>
+      <v-breadcrumbs-item href="/">
+        Home Page
+      </v-breadcrumbs-item>
+      <v-breadcrumbs-item :disabled="true">
+        {{ labelMes }}
+      </v-breadcrumbs-item>
+    </v-breadcrumbs>
     <v-layout row wrap>
       <v-snackbar :timeout="3000" top v-model="snackbar">
         {{ snackMsg }}
@@ -10,7 +19,7 @@
           <v-toolbar-title slot="extension" class="white--text">
             {{ labelMes }}
           </v-toolbar-title>
-          <v-btn fab medium dark color="indigo" bottom right absolute
+          <v-btn fab small dark color="indigo" bottom right absolute
             @click="onClickNovaDespesa">
             <v-icon>add</v-icon>
           </v-btn>
@@ -59,8 +68,8 @@
 
 <script>
 import meses from '@/shared/meses'
-import FirebaseUtils from '@/shared/firebase/firebase-utils'
-import DespesaService from '@/despesas/despesa-service'
+import FirebaseUtils from '@/shared/firebase/firebase.utils'
+import DespesaService from '@/despesas/service/despesa.service'
 import NovaDespesaDialog from '@/despesas/NovaDespesaDialog.vue'
 
 export default {

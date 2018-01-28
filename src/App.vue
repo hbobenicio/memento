@@ -2,8 +2,10 @@
   <div id="app" class="m-app">
     <v-app>
       <v-content>
-        <v-container>
-          <router-view></router-view>
+        <v-container fluid>
+          <main>
+            <router-view></router-view>
+          </main>
         </v-container>
       </v-content>
     </v-app>

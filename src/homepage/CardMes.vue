@@ -1,11 +1,13 @@
 <template>
-  <v-card class="m-component m-card-mes ma-3" :color="cor">
+  <div class="m-component m-card-mes">
     <router-link :to="{ name: 'despesas', params: { mes: mes.index } }">
-      <v-card-text>
-        {{ mes.label }}
-      </v-card-text>
+      <v-card :color="cor" class="elevation-3 ma-2">
+        <v-card-text class="m-card-mes-text">
+          <h2>{{ mes.label }}</h2>
+        </v-card-text>
+      </v-card>
     </router-link>
-  </v-card>
+  </div>
 </template>
 
 <script>
@@ -39,7 +41,7 @@ export default {
   data: () => ({
     corMesOk: 'green accent-4',
     corMesPendente: 'amber lighten-1',
-    corMesFuturo: 'grey lighten-3',
+    corMesFuturo: 'white',
   }),
   computed: {
     isOk () {
@@ -69,8 +71,31 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+  $card-height: 85px;
+
+  .m-card-mes {
+    .card {
+      height: $card-height !important;
+    }
+  }
+
   .m-card-mes:hover {
     cursor: pointer;
+  }
+
+  .m-card-mes-text {
+    padding: 0px;
+    height: 100%;
+    vertical-align: middle;
+    line-height: $card-height;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  h2 {
+    // text-shadow: -1px 0 gray, 0 1px gray, 1px 0 gray, 0 -1px gray;
   }
 </style>
