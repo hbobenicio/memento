@@ -1,5 +1,9 @@
 <template>
   <div id="m-home-page" class="m-component m-page grey lighten-3" fluid>
+    <v-snackbar :timeout="3000" top v-model="snackbar">
+      {{ snackMsg }}
+    </v-snackbar>
+
     <MHomePageTitle />
 
     <v-container fluid>
@@ -17,6 +21,7 @@ import HomePageTitle from '@/homepage/TheHomePageTitle.vue'
 import CardMes from '@/homepage/CardMes.vue'
 import meses from '@/shared/meses'
 
+import DespesaBC from '@/despesas/business/despesa.business'
 import DespesaService from '@/despesas/service/despesa.service'
 
 export default {
@@ -29,28 +34,38 @@ export default {
     this.listarDespesas()
   },
   data: () => ({
+    snackMsg: '',
+    snackbar: false,
     titulo: 'Home Page',
     corMesOk: 'green accent-4',
     corMesPendente: 'amber lighten-1',
     corMesFuturo: 'grey lighten-3',
     meses,
     despesas: [],
-    tipoPendencias: [
-      'ok', 'pendente', 'futuro', 'futuro', 'futuro', 'futuro', 'futuro', 'futuro', 'futuro', 'futuro', 'futuro', 'futuro'
-    ]
+    tipoPendencias: []
   }),
   methods: {
+    // TODO colocar funções de snack em um mixin. Adicionar snacks no App
+    snackWithMsg (msg) {
+      this.snackMsg = msg
+      this.snackbar = true
+    },
+
     listarDespesas () {
       DespesaService.all()
         .then(despesas => {
           this.despesas = despesas
-
+          this.preencherPendencias()
         })
         .catch(error => {
           this.snackWithMsg('Erro ao recuperar a lista de despesas')
           console.error('Erro: ', error)
           this.despesas = []
         })
+    },
+
+    preencherPendencias () {
+      this.tipoPendencias = DespesaBC.obterPendencias(this.despesas)
     }
   }
 }
