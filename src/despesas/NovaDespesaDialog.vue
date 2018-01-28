@@ -14,10 +14,6 @@
         <v-container grid-list-md>
           <v-layout wrap>
             <v-flex xs12>
-              <!-- <v-text-field label="Vencimento" prepend-icon="event" hint="dd/mm/aaaa" required
-                v-model="novaDespesa.vencimento">
-              </v-text-field> -->
-
               <v-dialog persistent v-model="showModalVencimento" lazy full-width width="290px">
                 <v-text-field slot="activator" prepend-icon="event" readonly
                   label="Vencimento"
@@ -28,7 +24,7 @@
                   <template slot-scope="{ save, cancel }">
                     <v-card-actions>
                       <v-spacer></v-spacer>
-                      <v-btn flat color="primary" @click="cancel">Cancelar</v-btn>
+                      <v-btn flat color="red" @click="cancel">Cancelar</v-btn>
                       <v-btn flat color="primary" @click="save">Salvar</v-btn>
                     </v-card-actions>
                   </template>
@@ -122,6 +118,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-</style>
