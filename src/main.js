@@ -9,7 +9,7 @@ import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.css'
 
 // Globally registered filters
-import '@/shared/filters/date.filter'
+import '@/shared/filters'
 
 import App from './App.vue'
 
