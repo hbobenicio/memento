@@ -13,6 +13,8 @@
       <v-card-text>
         <v-container grid-list-md>
           <v-layout wrap>
+
+            <!-- Vencimento -->
             <v-flex xs12>
               <v-dialog persistent v-model="showModalVencimento" lazy full-width width="290px">
                 <v-text-field slot="activator" prepend-icon="event" readonly
@@ -33,28 +35,34 @@
                 </v-date-picker>
               </v-dialog>
             </v-flex>
+
+            <!-- Nome -->
             <v-flex xs12>
               <v-text-field label="Nome da Despesa" required
                 v-model="novaDespesa.nome"
                 @change="validarFormulario">
               </v-text-field>
             </v-flex>
+
+            <!-- Responsável -->
             <v-flex xs12>
               <v-text-field label="Responsavel" required
                 v-model="novaDespesa.responsavel"
                 @change="validarFormulario">
               </v-text-field>
             </v-flex>
+
+            <!-- Valor -->
             <v-flex xs12>
               <v-text-field label="Valor" prefix="R$" required
                 hint="999.99"
                 :rules="[rules.required, rules.numerico]"
                 v-model="novaDespesa.valor"
-                @change="validarFormulario"
-                />
+                @change="validarFormulario" />
             </v-flex>
           </v-layout>
         </v-container>
+
         <small class="red--text">*campos obrigatórios</small>
       </v-card-text>
 

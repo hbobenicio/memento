@@ -12,8 +12,9 @@
       </v-breadcrumbs-item>
     </v-breadcrumbs>
 
-    <!-- Cabeçalho + Botão Add Despesa -->
     <v-layout row wrap>
+
+      <!-- Cabeçalho + Botão Add Despesa -->
       <v-flex xs12>
         <v-toolbar color="light-blue" light extended>
           <v-toolbar-title slot="extension" class="white--text">
@@ -25,10 +26,8 @@
           </v-btn>
         </v-toolbar>
       </v-flex>
-    </v-layout>
 
-    <!-- Grid de Despesas -->
-    <v-layout>
+      <!-- Grid de Despesas -->
       <v-flex xs12>
         <v-data-table id="despesasTable"
           :headers="tabelaDespesas.headers"
