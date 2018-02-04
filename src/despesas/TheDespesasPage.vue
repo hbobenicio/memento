@@ -1,5 +1,7 @@
 <template>
   <section id="m-despesas-page" class="m-component m-page">
+
+    <!-- Breadcrumbs de navegação -->
     <v-breadcrumbs>
       <v-icon slot="divider">chevron_right</v-icon>
       <v-breadcrumbs-item href="/">
@@ -9,11 +11,9 @@
         {{ labelMes }}
       </v-breadcrumbs-item>
     </v-breadcrumbs>
-    <v-layout row wrap>
-      <v-snackbar :timeout="3000" top v-model="snackbar">
-        {{ snackMsg }}
-      </v-snackbar>
 
+    <!-- Cabeçalho + Botão Add Despesa -->
+    <v-layout row wrap>
       <v-flex xs12>
         <v-toolbar color="light-blue" light extended>
           <v-toolbar-title slot="extension" class="white--text">
@@ -26,6 +26,8 @@
         </v-toolbar>
       </v-flex>
     </v-layout>
+
+    <!-- Grid de Despesas -->
     <v-layout>
       <v-flex xs12>
         <v-data-table id="despesasTable"
@@ -71,6 +73,7 @@ import meses from '@/shared/meses'
 import FirebaseUtils from '@/shared/firebase/firebase.utils'
 import DespesaService from '@/despesas/service/despesa.service'
 import NovaDespesaDialog from '@/despesas/NovaDespesaDialog.vue'
+import SnackbarEventBus from '@/shared/event-bus/snackbar.event-bus'
 
 export default {
   name: 'MDespesasPage',
@@ -81,8 +84,6 @@ export default {
     NovaDespesaDialog
   },
   data: () => ({
-    snackMsg: '',
-    snackbar: false,
     despesas: [],
     pagination: {
       sortBy: 'pago'
@@ -120,8 +121,7 @@ export default {
   },
   methods: {
     snackWithMsg (msg) {
-      this.snackMsg = msg
-      this.snackbar = true
+      SnackbarEventBus.emitSnack(msg)
     },
     onClickNovaDespesa () {
       this.$refs.novaDespesaDialog.show()
@@ -132,7 +132,7 @@ export default {
           this.despesas = despesas
         })
         .catch(error => {
-          this.snackWithMsg('Erro ao recuperar a lista de despesas')
+          SnackbarEventBus.emitSnack('Erro ao recuperar a lista de despesas')
           console.error('Erro: ', error)
           this.despesas = []
         })
@@ -141,10 +141,10 @@ export default {
       DespesaService.create(novaDespesa)
         .then(response => {
           this.listarDespesas()
-          this.snackWithMsg('Nova despesa salva com sucesso')
+          SnackbarEventBus.emitSnack('Nova despesa salva com sucesso')
         })
         .catch(error => {
-          this.snackWithMsg('Erro ao salvar nova despesa')
+          SnackbarEventBus.emitSnack('Erro ao salvar nova despesa')
           console.error('Erro: ', error, novaDespesa)
         })
     },
@@ -152,10 +152,10 @@ export default {
       DespesaService.delete(despesaId)
         .then(response => {
           this.listarDespesas()
-          this.snackWithMsg('Despesa excluída com sucesso')
+          SnackbarEventBus.emitSnack('Despesa excluída com sucesso')
         })
         .catch(error => {
-          this.snackWithMsg(`Erro ao excluir despesa ${despesaId}`)
+          SnackbarEventBus.emitSnack(`Erro ao excluir despesa ${despesaId}`)
           console.error('Erro: ', error)
         })
     },
@@ -163,10 +163,10 @@ export default {
       DespesaService.update(despesa.id, {pago})
         .then(response => {
           console.log(response)
-          this.snackWithMsg('Despesa atualizada com sucesso')
+          SnackbarEventBus.emitSnack('Despesa atualizada com sucesso')
         })
         .catch(error => {
-          this.snackWithMsg(`Erro ao atualizar despesa ${despesa.id}`)
+          SnackbarEventBus.emitSnack(`Erro ao atualizar despesa ${despesa.id}`)
           console.error('Erro: ', error)
         })
     }
