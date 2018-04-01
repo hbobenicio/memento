@@ -3,7 +3,8 @@ import routes from '@/router/routes'
 
 const router = new VueRouter({
   mode: 'history',
-  routes
+  routes,
+  base: 'memento/'
 })
 
 export default router
