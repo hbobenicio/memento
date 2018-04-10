@@ -81,19 +81,21 @@
 <script>
 import { schema as DespesaSchema } from '@/despesas/model/despesa.schema'
 
+const NOVA_DESPESA_DEFAULT = {
+  vencimento: null,
+  nome: '',
+  responsavel: '',
+  valor: '0.0',
+  pago: false
+}
+
 export default {
   name: 'MNovaDespesaDialog',
   data: () => ({
     showDialog: false,
     showModalVencimento: false,
     despesaValida: false,
-    novaDespesa: {
-      vencimento: null,
-      nome: '',
-      responsavel: '',
-      valor: '0.0',
-      pago: false
-    },
+    novaDespesa: Object.assign({}, NOVA_DESPESA_DEFAULT), //When bidings change this, don't change the default object!
     rules: {
       required: (valor) => !!valor || 'Campo obrigatório.',
       numerico: (valor) => {
@@ -145,6 +147,7 @@ export default {
 
       this.hide()
       this.$emit('salvar', despesa)
+      this.novaDespesa = NOVA_DESPESA_DEFAULT
     }
   }
 }
