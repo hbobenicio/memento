@@ -8,6 +8,8 @@
               {{ snackMsg }}
             </v-snackbar>
 
+            <ConfirmationDialog />
+
             <router-view></router-view>
           </main>
         </v-container>
@@ -18,9 +20,14 @@
 
 <script>
 import SnackbarEventBus from '@/shared/event-bus/snackbar.event-bus'
+import ConfirmationDialog from '@/shared/components/confirmation-dialog/ConfirmationDialog'
 
 export default {
-  name: 'app',
+  name: 'App',
+
+  components: {
+    ConfirmationDialog
+  },
 
   created () {
     SnackbarEventBus.onSnack(this.onSnack)

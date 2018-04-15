@@ -17,7 +17,7 @@ import App from './App.vue'
 Vue.use(VueRouter)
 Vue.use(Vuetify)
 
-new Vue({
+window.vueInstance = new Vue({
   el: '#app',
   router,
   render: h => h(App)

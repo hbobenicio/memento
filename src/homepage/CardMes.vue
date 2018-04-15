@@ -12,6 +12,7 @@
 
 <script>
 import meses from '@/shared/meses'
+import oneOf from '@/shared/validators/one-of.validator'
 
 export const TIPO_OK = 'ok'
 export const TIPO_PENDENTE = 'pendente'
@@ -22,20 +23,13 @@ export default {
   props: {
     tipo: {
       type: String,
-      required: true,
       default: TIPO_FUTURO,
-      validator: (valor) => {
-        return valor === TIPO_OK
-        || valor === TIPO_PENDENTE
-        || valor === TIPO_FUTURO
-      }
+      validator: oneOf([TIPO_OK, TIPO_PENDENTE, TIPO_FUTURO])
     },
     indiceMes: {
       type: Number,
       required: true,
-      validator: (valor) => {
-        return meses.map(m => m.index).includes(valor)
-      }
+      validator: oneOf(meses.map(m => m.index))
     }
   },
   data: () => ({

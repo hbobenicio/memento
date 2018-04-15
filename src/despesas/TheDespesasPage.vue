@@ -73,6 +73,7 @@ import FirebaseUtils from '@/shared/firebase/firebase.utils'
 import DespesaService from '@/despesas/service/despesa.service'
 import NovaDespesaDialog from '@/despesas/NovaDespesaDialog.vue'
 import SnackbarEventBus from '@/shared/event-bus/snackbar.event-bus'
+import ConfirmationDialogEventBus from '@/shared/components/confirmation-dialog/confirmation-dialog.event-bus'
 
 export default {
   name: 'MDespesasPage',
@@ -86,7 +87,8 @@ export default {
     despesas: [],
     pagination: {
       sortBy: 'pago'
-    }
+    },
+    selectedDespesaId: undefined
   }),
   computed: {
     codigoMes () {
@@ -148,16 +150,45 @@ export default {
         })
     },
     excluirDespesa (despesaId) {
-      DespesaService.delete(despesaId)
-        .then(response => {
-          this.listarDespesas()
-          SnackbarEventBus.emitSnack('Despesa excluída com sucesso')
-        })
-        .catch(error => {
-          SnackbarEventBus.emitSnack(`Erro ao excluir despesa ${despesaId}`)
-          console.error('Erro: ', error)
-        })
+      this.selectedDespesaId = despesaId
+      ConfirmationDialogEventBus.onChoose(this.onChoose)
+      ConfirmationDialogEventBus.emitOpen({
+        type: 'warning',
+        title: 'Alerta',
+        msg: 'Deseja realmente excluir esta despesa?'
+      })
+
+      // DespesaService.delete(despesaId)
+      //   .then(response => {
+      //     this.listarDespesas()
+      //     SnackbarEventBus.emitSnack('Despesa excluída com sucesso')
+      //   })
+      //   .catch(error => {
+      //     SnackbarEventBus.emitSnack(`Erro ao excluir despesa ${despesaId}`)
+      //     console.error('Erro: ', error)
+      //   })
     },
+
+    onChoose (choise) {
+      if (choise === true) {
+        DespesaService.delete(this.selectedDespesaId)
+          .then(response => {
+            this.listarDespesas()
+            SnackbarEventBus.emitSnack('Despesa excluída com sucesso')
+          })
+          .catch(error => {
+            SnackbarEventBus.emitSnack(`Erro ao excluir despesa ${despesaId}`)
+            console.error('Erro: ', error)
+          })
+      }
+
+      // Clear temp state
+      this.selectedDespesaId = undefined
+
+      // Unregister choise listener from ConfirmationDialog
+      ConfirmationDialogEventBus.offChoose(this.onChoose)
+    },
+
     onSwitchPago (despesa, pago) {
       DespesaService.update(despesa.id, {pago})
         .then(response => {
