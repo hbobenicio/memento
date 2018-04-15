@@ -157,16 +157,6 @@ export default {
         title: 'Alerta',
         msg: 'Deseja realmente excluir esta despesa?'
       })
-
-      // DespesaService.delete(despesaId)
-      //   .then(response => {
-      //     this.listarDespesas()
-      //     SnackbarEventBus.emitSnack('Despesa excluída com sucesso')
-      //   })
-      //   .catch(error => {
-      //     SnackbarEventBus.emitSnack(`Erro ao excluir despesa ${despesaId}`)
-      //     console.error('Erro: ', error)
-      //   })
     },
 
     onChoose (choise) {
