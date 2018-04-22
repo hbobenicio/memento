@@ -54,6 +54,9 @@
               <v-switch v-model="props.item.pago" @change="onSwitchPago(props.item, $event)"></v-switch>
             </td>
             <td :class="{pago: props.item.pago, green: props.item.pago, amber: !props.item.pago}" class="text-xs-center lighten-4">
+              <v-btn icon color="info" @click="editarDespesa(props.item.id)">
+                <v-icon>create</v-icon>
+              </v-btn>
               <v-btn icon color="error" @click="excluirDespesa(props.item.id)">
                 <v-icon>delete_forever</v-icon>
               </v-btn>
@@ -74,6 +77,7 @@ import DespesaService from '@/despesas/service/despesa.service'
 import NovaDespesaDialog from '@/despesas/NovaDespesaDialog.vue'
 import SnackbarEventBus from '@/shared/event-bus/snackbar.event-bus'
 import ConfirmationDialogEventBus from '@/shared/components/confirmation-dialog/confirmation-dialog.event-bus'
+import router from '@/router/router'
 
 export default {
   name: 'MDespesasPage',
@@ -114,7 +118,7 @@ export default {
           { text: 'Responsável', value: 'responsavel' },
           { text: 'Valor', value: 'valor' },
           { text: 'Status', value: 'status' },
-          { text: 'Acoes' }
+          { text: 'Ações' }
         ],
         items: this.despesasOrdenadas
       }
@@ -149,6 +153,16 @@ export default {
           console.error('Erro: ', error, novaDespesa)
         })
     },
+
+    editarDespesa (despesaId) {
+      router.push({
+        name: 'despesas-edit',
+        params: {
+          despesaId
+        }
+      })
+    },
+
     excluirDespesa (despesaId) {
       this.selectedDespesaId = despesaId
       ConfirmationDialogEventBus.onChoose(this.onChoose)
