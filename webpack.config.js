@@ -2,10 +2,10 @@ const path = require('path')
 const webpack = require('webpack')
 
 const htmlWebpackPlugin = require('html-webpack-plugin')
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+// const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 const GH_PAGES = process.env.GH_PAGES || null
-const PUBLIC_PATH = process.env.GH_PAGES ?
+const PUBLIC_PATH = GH_PAGES ?
   'https://hbobenicio.github.io/memento' : ''
 
 const OUTPUT_PATH = process.env.GH_PAGES ?

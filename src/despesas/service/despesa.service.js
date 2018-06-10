@@ -13,6 +13,13 @@ class DespesaService {
     return axiosInstance.get(resourcePath).then(FirebaseUtils.responseToList)
   }
 
+  findById (despesaId) {
+    const resourcePath = `/despesas/${despesaId}.json`
+    return axiosInstance.get(resourcePath)
+      .then(response => response.data)
+      .then(data => ({id: despesaId, ...data}))
+  }
+
   allByMonth (month) {
     // https://memento-31b51.firebaseio.com/despesas.json?orderBy=%22mes%22&startAt=1&endAt=1
     const resourcePath = '/despesas.json'

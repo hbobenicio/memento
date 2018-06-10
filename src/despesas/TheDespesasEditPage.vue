@@ -13,7 +13,8 @@
 
       <!-- Formulário de Despesa -->
       <v-flex xs12>
-        <p>Edit Despesa: {{ this.$route.params.despesaId }}</p>
+        <Loading v-if="!despesa" />
+        <DespesaForm v-else :despesa="despesa" />
       </v-flex>
     </v-layout>
 
@@ -22,12 +23,33 @@
 
 <script>
 import DespesaService from '@/despesas/service/despesa.service'
+import DespesaForm from './DespesaForm'
+import Loading from '@/shared/components/loading/Loading'
 
 export default {
   name: 'MDespesasEditPage',
 
   created () {
-    // DespesaService.findById()
+    DespesaService.findById(this.despesaId)
+      .then(despesa => this.despesa = despesa)
+      .catch(e => console.error(e))
+  },
+
+  components: {
+    Loading,
+    DespesaForm
+  },
+
+  data () {
+    return {
+      despesa: null
+    }
+  },
+
+  computed: {
+    despesaId() {
+      return this.$route.params.despesaId
+    }
   }
 }
 </script>
